@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Cliente{% endblock %}
+
+{% block content %}
+    <h1>Crear Cliente</h1>
+    <form id="clienteForm" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear Cliente</button>
+        <button type="button" onclick="clearForm()">Limpiar Formulario</button>
+    </form>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Lista de Clientes</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.id }}</td>
+                    <td>{{ cliente.nombre }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>{{ cliente.email }}</td>
+                    <td>
+                        <form method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar este cliente?');">
+                            {% csrf_token %}
+                            <button type="submit" name="delete_cliente" value="{{ cliente.id }}"
+                                    style="background-color:#ff5252;color:white;border:none;padding:5px 10px;cursor:pointer;">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function clearForm() {
+            document.getElementById('clienteForm').reset();
+        }
+    </script>
+{% endblock %}

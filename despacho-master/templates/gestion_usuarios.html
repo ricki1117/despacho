@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+    <h1>Gestión de Usuarios</h1>
+    <form id="userForm" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear Usuario</button>
+        <button type="button" onclick="clearForm()">Limpiar Formulario</button>
+    </form>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Lista de Usuarios</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Rol</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.first_name }}</td>
+                    <td>{{ usuario.last_name }}</td>
+                    <td>{{ usuario.perfil.rol }}</td>
+                    <td>
+                        {% if usuario.username != 'admin' and usuario.id != request.user.id %}
+                            <form method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar este usuario?');">
+                                {% csrf_token %}
+                                <button type="submit" name="delete_usuario" value="{{ usuario.id }}"
+                                        style="background-color:#ff5252;color:white;border:none;padding:5px 10px;cursor:pointer;">
+                                    Eliminar
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function clearForm() {
+            document.getElementById('userForm').reset();
+        }
+    </script>
+{% endblock %}
