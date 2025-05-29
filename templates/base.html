@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Gestión{% endblock %}</title>
+    <style>
+        /* Basic navbar styling */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .navbar a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .navbar .logout {
+            float: right;
+            background-color: #f44336;
+        }
+
+        /* Style for logout form to match navbar links */
+        .navbar form {
+            margin: 0;
+            padding: 0;
+            float: right;
+        }
+
+        .navbar form button {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-family: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            float: right;
+        }
+
+        .navbar form button:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            padding: 20px;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'gestion_cliente' %}">Crear Cliente</a>
+        <a href="{% url 'crear_caso' %}">Crear Caso</a>
+        <a href="{% url 'vista_tablas' %}">Vista Tablas</a>
+        {% if request.user.perfil.rol == 'admin' %}
+        <a href="{% url 'gestion_usuarios' %}">Gestión Usuarios</a>
+        {% endif %}
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Cerrar Sesión</button>
+        </form>
+    </div>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Caso{% endblock %}
+
+{% block content %}
+    <h1>Crear Caso</h1>
+    <form id="casoForm" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear Caso</button>
+        <button type="button" onclick="clearForm()">Limpiar Formulario</button>
+    </form>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Lista de Casos</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Asignado A</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for caso in casos %}
+                <tr>
+                    <td>{{ caso.id }}</td>
+                    <td>{{ caso.cliente }}</td>
+                    <td>{{ caso.titulo }}</td>
+                    <td>{{ caso.descripcion }}</td>
+                    <td>{{ caso.estado }}</td>
+                    <td>{{ caso.fecha_inicio }}</td>
+                    <td>{{ caso.fecha_fin }}</td>
+                    <td>{{ caso.asignado_a }}</td>
+                    <td>
+                        <form method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar este caso?');">
+                            {% csrf_token %}
+                            <button type="submit" name="delete_caso" value="{{ caso.id }}"
+                                    style="background-color:#ff5252;color:white;border:none;padding:5px 10px;cursor:pointer;">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function clearForm() {
+            document.getElementById('casoForm').reset();
+        }
+    </script>
+{% endblock %}
